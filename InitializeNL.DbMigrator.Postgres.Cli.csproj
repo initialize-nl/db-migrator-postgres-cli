@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>default</LangVersion>
+    <OutputType>Exe</OutputType>
+    <AnalysisMode>All</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- .NET Tool -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>db-migrator-postgres</ToolCommandName>
+    <PackageId>InitializeNL.DbMigrator.Postgres.Cli</PackageId>
+    <Description>PostgreSQL database migration CLI tool. Supports up/down migrations, parallel execution, advisory locking, and multi-tenant discovery.</Description>
+    <Authors>Frank Hommers</Authors>
+    <PackageTags>database;migration;migrator;sql;postgres;postgresql;cli;tool;dotnet-tool</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/initialize-nl/db-migrator-postgres-cli</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="InitializeNL.DbMigrator" Version="1.*"/>
+    <PackageReference Include="InitializeNL.DbMigrator.Postgres" Version="1.*"/>
+    <PackageReference Include="CommandLineParser" Version="2.9.1"/>
+    <PackageReference Include="GitVersion.MsBuild" Version="6.6.2" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.5"/>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" PrivateAssets="all"/>
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.15.0" PrivateAssets="all"/>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" PrivateAssets="all"/>
+    <PackageReference Include="Spectre.Console" Version="0.54.0"/>
+  </ItemGroup>
+
+</Project>

@@ -20,6 +20,7 @@ internal sealed partial class Migrator
   private readonly Lock _destructiveConfirmationLock = new();
   private readonly IConnectionProvider _connectionProvider;
   private readonly string _scriptsDir;
+  private readonly string? _assemblyPath;
   private readonly string? _target;
   private readonly bool _useLocks;
   private readonly bool _dryRun;
@@ -45,6 +46,7 @@ internal sealed partial class Migrator
     _connectionProvider = connectionProvider;
     _scriptManager = new ScriptManager(loggerFactory);
     _scriptsDir = options.Source;
+    _assemblyPath = string.IsNullOrWhiteSpace(options.Assembly) ? null : options.Assembly;
     _target = string.IsNullOrWhiteSpace(options.Target) ? null : options.Target;
     _useLocks = !options.NoLock;
     _dryRun = options.DryRun;
@@ -70,7 +72,7 @@ internal sealed partial class Migrator
       LogRealMode();
     }
 
-    _scriptManager.Load(_scriptsDir, _target);
+    _scriptManager.Load(_scriptsDir, _assemblyPath, _target);
     IReadOnlyList<MigrationTargetGroup> connections = await _connectionProvider.GetTargetsAsync().ConfigureAwait(false);
     await MigrateAllAsync(connections, _target).ConfigureAwait(false);
   }
@@ -392,7 +394,7 @@ internal sealed partial class Migrator
 
   public bool PreConfirm()
   {
-    _scriptManager.Load(_scriptsDir, _target);
+    _scriptManager.Load(_scriptsDir, _assemblyPath, _target);
     IReadOnlyList<MigrationTargetGroup> connections = _connectionProvider.GetTargetsAsync().Result;
     if (_quiet || connections.Count <= 0)
     {

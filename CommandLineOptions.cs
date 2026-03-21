@@ -32,8 +32,11 @@ internal sealed class CommandLineOptions
     HelpText = "Override the password in the connection string. Falls back to DBMIGRATOR_PASSWORD env var.")]
   public string Password { get; set; } = string.Empty;
 
-  [Option("source", Required = true, HelpText = "Path to the migration scripts directory.")]
+  [Option("source", Required = false, HelpText = "Path to the migration scripts directory.")]
   public string Source { get; set; } = string.Empty;
+
+  [Option("assembly", Required = false, HelpText = "Path to a .dll containing CodeMigration classes with [Migration] attributes.")]
+  public string Assembly { get; set; } = string.Empty;
 
   [Option("target", Required = false, HelpText = "Target migration name (latest when omitted).")]
   public string Target { get; set; } = string.Empty;

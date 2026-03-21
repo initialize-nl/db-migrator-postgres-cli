@@ -1,5 +1,6 @@
 #nullable enable
 using System.Data;
+using System.Reflection;
 using InitializeNL.DbMigrator.Scripts;
 using InitializeNL.DbMigrator.Sources;
 using Microsoft.Extensions.Logging;
@@ -26,9 +27,34 @@ internal sealed partial class ScriptManager
     _coreScriptManager.Load(migrationSource, target);
   }
 
-  public void Load(string scriptsDir, string? target)
+  public void Load(string? scriptsDir, string? assemblyPath, string? target)
   {
-    Load(new FileSystemMigrationSource(scriptsDir), target);
+    List<IMigrationSource> sources = [];
+
+    if (!string.IsNullOrWhiteSpace(scriptsDir))
+    {
+      LogLoadingFromDirectory(scriptsDir);
+      sources.Add(new FileSystemMigrationSource(scriptsDir));
+    }
+
+    if (!string.IsNullOrWhiteSpace(assemblyPath))
+    {
+      LogLoadingFromAssembly(assemblyPath);
+      string fullPath = Path.GetFullPath(assemblyPath);
+      Assembly assembly = Assembly.LoadFrom(fullPath);
+      sources.Add(new CodeMigrationSource(assembly));
+    }
+
+    if (sources.Count == 0)
+    {
+      throw new InvalidOperationException("No migration source specified. Use --source and/or --assembly.");
+    }
+
+    IMigrationSource source = sources.Count == 1
+      ? sources[0]
+      : new CompositeMigrationSource(sources);
+
+    Load(source, target);
   }
 
   public async Task<List<CoreScript>> GenerateMigrationQueueAsync(
